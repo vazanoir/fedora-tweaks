@@ -15,3 +15,6 @@ curl -s -o- https://raw.githubusercontent.com/rafaelmardojai/firefox-gnome-theme
 sudo dnf copr enable dusansimic/themes
 sudo dnf install morewaita-icon-theme
 gsettings set org.gnome.desktop.interface icon-theme 'MoreWaita'
+
+# Règle le problème entre SELinux et les jeux Source
+sudo setsebool -P allow_execheap 1
