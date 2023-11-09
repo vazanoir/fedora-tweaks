@@ -12,6 +12,6 @@ echo -e "max_parallel_downloads=10" | sudo tee -a /etc/dnf/dnf.conf > /dev/null
 curl -s -o- https://raw.githubusercontent.com/rafaelmardojai/firefox-gnome-theme/master/scripts/install-by-curl.sh | bash
 
 # Installation de MoreWaita
-dnf copr enable dusansimic/themes
-dnf install morewaita-icon-theme
+sudo dnf copr enable dusansimic/themes
+sudo dnf install morewaita-icon-theme
 gsettings set org.gnome.desktop.interface icon-theme 'MoreWaita'
