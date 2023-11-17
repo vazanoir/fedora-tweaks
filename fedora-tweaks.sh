@@ -35,7 +35,9 @@ gsettings set org.gnome.software packaging-format-preference "['flatpak', 'rpm']
 ### CORRECTIONS DE BUGS --------------------------------------------------------
 
 # Règle le problème entre SELinux et les jeux Source
-sudo setsebool -P allow_execheap 1
+if getsebool allow_execheap | grep -q off; then
+	sudo setsebool -P allow_execheap 1
+fi
 
 # Règle un problème pour certains gros jeux
 CONTENT="vm.max_map_count = 16777216"
