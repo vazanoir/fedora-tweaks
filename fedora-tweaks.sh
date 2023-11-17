@@ -28,7 +28,7 @@ if flatpak remotes | grep -q fedora; then
 	flatpak remote-delete fedora
 fi
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-gsettings set org.gnome.software packaging-format-preference "['flatpak', 'rpm']"
+gsettings set org.gnome.software packaging-format-preference "['flatpak:fedora', 'flatpak:fedora-testing', 'rpm']"
 
 
 
