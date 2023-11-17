@@ -18,3 +18,7 @@ gsettings set org.gnome.desktop.interface icon-theme 'MoreWaita'
 
 # Règle le problème entre SELinux et les jeux Source
 sudo setsebool -P allow_execheap 1
+
+# Règle un problème pour certains gros jeux
+echo -e "vm.max_map_count = 16777216" | sudo tee -a /etc/sysctl.conf > /dev/null
+sudo sysctl -p
