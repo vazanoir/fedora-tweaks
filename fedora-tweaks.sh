@@ -2,7 +2,8 @@
 
 ### APPARENCES -----------------------------------------------------------------
 
-# Installation de Firefox Gnome Theme
+# Installation de Betterfox et de Firefox Gnome Theme
+curl -s -o- https://raw.githubusercontent.com/vazanoir/update-betterfox/main/install-by-curl.sh | bash
 curl -s -o- https://raw.githubusercontent.com/rafaelmardojai/firefox-gnome-theme/master/scripts/install-by-curl.sh | bash
 
 # Installation de MoreWaita
