@@ -17,6 +17,7 @@ end
 
 ### TWEAKS ----------------------------------------------------------------
 
+# Set max parallel downloads to a bigger number
 set content "max_parallel_downloads=10"
 set file "/etc/dnf/dnf.conf"
 if not grep -q $content $file
