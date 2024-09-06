@@ -37,7 +37,11 @@ flatpak remote-add --if-not-exists --user flathub-beta https://flathub.org/beta-
 # Set flatpak first in Gnome's Software
 gsettings set org.gnome.software packaging-format-preference "['flatpak:flathub', 'flatpak:flathub-beta', 'rpm']"
 
-
+# Load i2c-dev and i2c-piix4 kernel modules for hardware detection in software like OpenRGB
+set file "/etc/modules-load.d/i2c.conf"
+if not test -e $file
+    echo -e "i2c-dev\ni2c-piix4" | sudo tee -a $file
+end
 
 ### BUGFIXES --------------------------------------------------------
 
