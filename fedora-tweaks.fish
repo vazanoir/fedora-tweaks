@@ -43,6 +43,11 @@ if not test -e $file
     echo -e "i2c-dev\ni2c-piix4" | sudo tee -a $file
 end
 
+# Install steam-devices for controller support in Steam's flatpak
+if dnf list installed | not grep steam-devices
+    sudo dnf install steam-devices
+end
+
 ### BUGFIXES --------------------------------------------------------
 
 # Fix issue between SELinux and Source games
