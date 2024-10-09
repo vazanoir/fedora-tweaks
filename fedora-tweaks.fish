@@ -44,7 +44,7 @@ if not test -e $file
 end
 
 # Install steam-devices for controller support in Steam's flatpak
-if dnf list installed | not grep steam-devices
+if dnf list installed | grep -q steam-devices
     sudo dnf install steam-devices
 end
 
