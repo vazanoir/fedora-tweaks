@@ -1,20 +1,5 @@
 #!/usr/bin/env fish
 
-### LOOKS -----------------------------------------------------------------
-
-# Install Betterfox and Firefox Gnome Theme
-curl -s -o- https://raw.githubusercontent.com/vazanoir/update-betterfox/main/install-by-curl.sh | bash
-curl -s -o- https://raw.githubusercontent.com/rafaelmardojai/firefox-gnome-theme/master/scripts/install-by-curl.sh | bash
-
-# Install MoreWaita
-if not dnf list installed | grep -q morewaita
-	sudo dnf copr enable dusansimic/themes -y
-	sudo dnf install morewaita-icon-theme -y
-	gsettings set org.gnome.desktop.interface icon-theme 'MoreWaita'
-end
-
-
-
 ### TWEAKS ----------------------------------------------------------------
 
 # Set max parallel downloads to a bigger number
