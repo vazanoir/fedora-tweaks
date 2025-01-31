@@ -31,6 +31,20 @@ if not dnf list --installed | grep -q steam-devices
     sudo dnf install -y steam-devices
 end
 
+### BUGFIXES --------------------------------------------------------
+
+# Fix issue between SELinux and Source games
+if getsebool allow_execheap | grep -q off
+	sudo setsebool -P allow_execheap 1
+end
+
+# Fix issue with big games
+set content "vm.max_map_count = 16777216"
+set file "/etc/sysctl.conf"
+if not grep -q $content $file
+	echo -e $content | sudo tee -a $file > /dev/null
+	sudo sysctl -p
+end
 
 # Install non-free p7zip with unrar capacities
 set content "exclude=p7zip p7zip-plugins"
@@ -47,17 +61,3 @@ if not grep -q $content $file
     echo -e $content | sudo tee -a $file > /dev/null
 end
 
-### BUGFIXES --------------------------------------------------------
-
-# Fix issue between SELinux and Source games
-if getsebool allow_execheap | grep -q off
-	sudo setsebool -P allow_execheap 1
-end
-
-# Fix issue with big games
-set content "vm.max_map_count = 16777216"
-set file "/etc/sysctl.conf"
-if not grep -q $content $file
-	echo -e $content | sudo tee -a $file > /dev/null
-	sudo sysctl -p
-end
