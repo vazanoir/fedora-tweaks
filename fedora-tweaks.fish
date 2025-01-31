@@ -27,17 +27,24 @@ if not test -e $file
 end
 
 # Install steam-devices for controller support in Steam's flatpak
-if dnf list --installed | grep -q steam-devices
-    sudo dnf install steam-devices
+if not dnf list --installed | grep -q steam-devices
+    sudo dnf install -y steam-devices
 end
 
+
 # Install non-free p7zip with unrar capacities
-if dnf list --installed | grep -q p7zip
+set content "exclude=p7zip p7zip-plugins"
+set file "/etc/dnf/dnf.conf"
+if not grep -q $content $file
+    # Install the packages
     cd /tmp
-    curl https://github.com/ttys3/fedora-rpm-p7zip/releases/download/16.02/p7zip-16.02-24.fc37.x86_64.rpm -O
-    curl https://github.com/ttys3/fedora-rpm-p7zip/releases/download/16.02/p7zip-plugins-16.02-24.fc37.x86_64.rpm -O
-    sudo dnf install ./p7zip*
+    curl https://github.com/ttys3/fedora-rpm-p7zip/releases/download/16.02/p7zip-16.02-24.fc37.x86_64.rpm -OL
+    curl https://github.com/ttys3/fedora-rpm-p7zip/releases/download/16.02/p7zip-plugins-16.02-24.fc37.x86_64.rpm -OL
+    sudo dnf install -y p7zip*
     cd -
+
+    # Prevent dnf to auto-update them
+    echo -e $content | sudo tee -a $file > /dev/null
 end
 
 ### BUGFIXES --------------------------------------------------------
