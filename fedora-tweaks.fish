@@ -31,6 +31,11 @@ if not dnf list --installed | grep -q steam-devices
     sudo dnf install -y steam-devices
 end
 
+# Install systemd-container for the app GDM Settings
+if not dnf list --installed | grep -q systemd-container
+    sudo dnf install -y systemd-container
+end
+
 ### BUGFIXES --------------------------------------------------------
 
 # Fix issue between SELinux and Source games
