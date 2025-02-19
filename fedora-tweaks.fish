@@ -56,6 +56,7 @@ set content "exclude=p7zip p7zip-plugins"
 set file "/etc/dnf/dnf.conf"
 if not grep -q $content $file
     # Install the packages
+    sudo dnf remove -y p7zip p7zip-plugins
     cd /tmp
     curl https://github.com/ttys3/fedora-rpm-p7zip/releases/download/16.02/p7zip-16.02-24.fc37.x86_64.rpm -OL
     curl https://github.com/ttys3/fedora-rpm-p7zip/releases/download/16.02/p7zip-plugins-16.02-24.fc37.x86_64.rpm -OL
