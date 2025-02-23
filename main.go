@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
+	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -21,64 +23,38 @@ type model struct {
 }
 
 func main() {
+    // check if root
+	if os.Geteuid() != 0 {
+		fmt.Println(errFmt("this program requires root privileges"))
+		os.Exit(1)
+	}
+
+    // check for system updates
+    cmd := exec.Command("dnf", "check-upgrade")
+    if err := cmd.Start(); err != nil {
+        fmt.Println(errFmt(err.Error()))
+        os.Exit(2)
+    }
+
+    if err := cmd.Wait(); err != nil {
+        if exiterr, ok := err.(*exec.ExitError); ok && exiterr.ExitCode() != 0 {
+            fmt.Println(errFmt("please update your system"))
+            os.Exit(3)
+        } else {
+            fmt.Println(errFmt(err.Error()))
+        }
+    }
+
+    // start the program
 	p := tea.NewProgram(initialModel())
 	if _, err := p.Run(); err != nil {
-		fmt.Printf("error: %v", err)
-		os.Exit(1)
+		fmt.Println(errFmt(err.Error()))
+		os.Exit(4)
 	}
 }
 
-func tweaks() []tweak {
-	return []tweak{
-		tweak{
-			name:              "Dnf parallel downloads",
-			desc:              "Set the number of parallel downloads dnf can do to 10.",
-			callback:          func() error { return nil },
-			selectedByDefault: true,
-		},
-		tweak{
-			name:              "Remove Fedora Flatpak",
-			desc:              "Remove the Fedora Flatpak apps and repository.",
-			callback:          func() error { return nil },
-			selectedByDefault: false,
-		},
-		tweak{
-			name:              "Set flatpak as default in Gnome Software",
-			desc:              "Change the order sources appear in Gnome Software so that flatpak is first.",
-			callback:          func() error { return nil },
-			selectedByDefault: false,
-		},
-		tweak{
-			name:              "Load i2c-dev and i2c-piix4 kernel modules",
-			desc:              "Load needed kernel modules for hardware detection in software like OpenRGB.",
-			callback:          func() error { return nil },
-			selectedByDefault: true,
-		},
-		tweak{
-			name:              "Install systemd-container",
-			desc:              "Install the systemd-container dnf package, mainly with GDM Settings in mind.",
-			callback:          func() error { return nil },
-			selectedByDefault: true,
-		},
-		tweak{
-			name:              "Fix issue between SELinux and Source games",
-			desc:              "Install the systemd-container dnf package, mainly with GDM Settings in mind.",
-			callback:          func() error { return nil },
-			selectedByDefault: true,
-		},
-		tweak{
-			name:              "Fix issue with big games",
-			desc:              "Install the systemd-container dnf package, mainly with GDM Settings in mind.",
-			callback:          func() error { return nil },
-			selectedByDefault: true,
-		},
-		tweak{
-			name:              "Install non-free p7zip with unrar capacities",
-			desc:              "Install the systemd-container dnf package, mainly with GDM Settings in mind.",
-			callback:          func() error { return nil },
-			selectedByDefault: true,
-		},
-	}
+func errFmt(err string) error {
+	return fmt.Errorf("\033[0;31merror\033[0m: %v", err)
 }
 
 func initialModel() model {
@@ -124,7 +100,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.selected[m.cursor] = tweak{}
 			}
 		case "r":
-			fmt.Println("should run all the tweaks")
+			for i, _ := range m.selected {
+				err := m.choices[i].callback()
+				if err != nil {
+					lowerName := strings.ToLower(m.choices[i].name)
+					fmt.Printf("%v (%v)", errFmt(err.Error()), lowerName)
+					os.Exit(100 + i)
+				}
+			}
 		}
 	}
 
