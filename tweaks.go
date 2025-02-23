@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"io"
 	"os"
 	"os/exec"
@@ -93,9 +94,26 @@ func tweaks() []tweak {
 			selectedByDefault: true,
 		},
 		tweak{
-			name:              "Load i2c-dev and i2c-piix4 kernel modules",
-			desc:              "Load needed kernel modules for hardware detection in software like OpenRGB.",
-			callback:          func() error { return nil },
+			name: "Load i2c-dev and i2c-piix4 kernel modules",
+			desc: "Load needed kernel modules for hardware detection in software like OpenRGB.",
+			callback: func() error {
+				filePath := "/etc/modules-load.d/i2c.conf"
+				_, err := os.Stat(filePath)
+				if err == nil {
+					return nil
+				}
+
+				if !errors.Is(err, os.ErrNotExist) {
+					return err
+				}
+
+				err = os.WriteFile(filePath, []byte("i2c-dev\ni2c-piix4\n"), 0644)
+				if err != nil {
+					return err
+				}
+
+				return nil
+			},
 			selectedByDefault: true,
 		},
 		tweak{
