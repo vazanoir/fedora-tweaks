@@ -139,13 +139,56 @@ func tweaks() []tweak {
 		tweak{
 			name:              "Fix issue between SELinux and Source games",
 			desc:              "Install the systemd-container dnf package, mainly with GDM Settings in mind.",
-			callback:          func() error { return nil },
+			callback:          func() error { 
+				stdOut, err := exec.Command("getsebool", "allow_execheap").Output()
+				if err != nil {
+					return err
+				}
+                if strings.Contains(string(stdOut), "on") {
+                    return nil
+                }
+
+				stdOut, err = exec.Command("setsebool", "-P", "allow_execheap", "1").Output()
+				if err != nil {
+					return err
+				}
+
+                return nil
+            },
 			selectedByDefault: false,
 		},
 		tweak{
-			name:              "Fix issue with big games",
-			desc:              "Install the systemd-container dnf package, mainly with GDM Settings in mind.",
-			callback:          func() error { return nil },
+			name:              "Increase vm.max_map_count to 16 GB",
+			desc:              "Some applications and games (like Red Dead Redemption 2 or Star Citizen) crash because\n      of this value being too low. This tweak increase it to 16 GB, don't use this tweak if you\n      have less than that amount in RAM.",
+			callback:          func() error { 
+				f, err := os.OpenFile("/etc/sysctl.conf", os.O_APPEND|os.O_RDWR, 0644)
+				if err != nil {
+					return err
+				}
+				defer f.Close()
+
+				reader := bufio.NewReader(f)
+				for {
+					line, err := reader.ReadString('\n')
+					if err == io.EOF {
+						break
+					}
+					if err != nil {
+						return err
+					}
+
+					if strings.Contains(line, "vm.max_map_count") {
+						return nil
+					}
+				}
+
+				_, err = f.WriteString("vm.max_map_count = 16777216\n")
+				if err != nil {
+					return err
+				}
+
+                return nil
+            },
 			selectedByDefault: false,
 		},
 		tweak{
