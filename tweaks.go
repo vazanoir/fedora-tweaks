@@ -80,22 +80,29 @@ func tweaks() []tweak {
 			selectedByDefault: true,
 		},
 		tweak{
-			name:              "Set flatpak as default in Gnome Software",
-			desc:              "Change the order sources appear in Gnome Software so that flatpak is first.",
-			callback:          func() error { return nil },
-			selectedByDefault: false,
+			name: "Set flatpak as the prefered packaging format in Gnome Software",
+			desc: "Change the order packaging formats appear in Gnome Software so that flatpak shows first.",
+			callback: func() error {
+				_, err := exec.Command("runuser", "--user", os.Getenv("SUDO_USER"), "--", "sh", "-c", "gsettings set org.gnome.software packaging-format-preference \"['flatpak:flathub', 'flatpak:flathub-beta', 'rpm']\"").Output()
+				if err != nil {
+					return err
+				}
+
+				return nil
+			},
+			selectedByDefault: true,
 		},
 		tweak{
 			name:              "Load i2c-dev and i2c-piix4 kernel modules",
 			desc:              "Load needed kernel modules for hardware detection in software like OpenRGB.",
 			callback:          func() error { return nil },
-			selectedByDefault: false,
+			selectedByDefault: true,
 		},
 		tweak{
 			name:              "Install systemd-container",
 			desc:              "Install the systemd-container dnf package, mainly with GDM Settings in mind.",
 			callback:          func() error { return nil },
-			selectedByDefault: false,
+			selectedByDefault: true,
 		},
 		tweak{
 			name:              "Fix issue between SELinux and Source games",
