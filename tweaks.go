@@ -267,7 +267,7 @@ func tweaks() []tweak {
 					}
 				}
 
-				_, err = f.WriteString("exclude=p7zip p7zip-plugins")
+				_, err = f.WriteString("exclude=p7zip p7zip-plugins\n")
 				if err != nil {
 					return err
 				}
