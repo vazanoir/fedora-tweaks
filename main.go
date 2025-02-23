@@ -23,29 +23,29 @@ type model struct {
 }
 
 func main() {
-    // check if root
+	// check if root
 	if os.Geteuid() != 0 {
 		fmt.Println(errFmt("this program requires root privileges"))
 		os.Exit(1)
 	}
 
-    // check for system updates
-    cmd := exec.Command("dnf", "check-upgrade")
-    if err := cmd.Start(); err != nil {
-        fmt.Println(errFmt(err.Error()))
-        os.Exit(2)
-    }
+	// check for system updates
+	cmd := exec.Command("dnf", "check-upgrade")
+	if err := cmd.Start(); err != nil {
+		fmt.Println(errFmt(err.Error()))
+		os.Exit(2)
+	}
 
-    if err := cmd.Wait(); err != nil {
-        if exiterr, ok := err.(*exec.ExitError); ok && exiterr.ExitCode() != 0 {
-            fmt.Println(errFmt("please update your system"))
-            os.Exit(3)
-        } else {
-            fmt.Println(errFmt(err.Error()))
-        }
-    }
+	if err := cmd.Wait(); err != nil {
+		if exiterr, ok := err.(*exec.ExitError); ok && exiterr.ExitCode() != 0 {
+			fmt.Println(errFmt("please update your system"))
+			os.Exit(3)
+		} else {
+			fmt.Println(errFmt(err.Error()))
+		}
+	}
 
-    // start the program
+	// start the program
 	p := tea.NewProgram(initialModel())
 	if _, err := p.Run(); err != nil {
 		fmt.Println(errFmt(err.Error()))
