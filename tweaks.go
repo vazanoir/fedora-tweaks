@@ -99,9 +99,23 @@ func tweaks() []tweak {
 			selectedByDefault: true,
 		},
 		tweak{
-			name:              "Install systemd-container",
-			desc:              "Install the systemd-container dnf package, mainly with GDM Settings in mind.",
-			callback:          func() error { return nil },
+			name: "Install systemd-container, dependency for apps like GDM Settings",
+			desc: "This tweak exists because nothing tells you that GDM Settings need that package installed.",
+			callback: func() error {
+				stdOut, err := exec.Command("dnf", "list", "--installed").Output()
+				if err != nil {
+					return err
+				}
+				if strings.Contains(string(stdOut), "systemd-container") {
+					return nil
+				}
+
+				stdOut, err = exec.Command("dnf", "install", "systemd-container").Output()
+				if err != nil {
+					return err
+				}
+				return nil
+			},
 			selectedByDefault: true,
 		},
 		tweak{
