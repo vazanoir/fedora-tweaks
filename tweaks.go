@@ -138,7 +138,7 @@ func tweaks() []tweak {
 		},
 		tweak{
 			name:              "Fix issue between SELinux and Source games",
-			desc:              "Install the systemd-container dnf package, mainly with GDM Settings in mind.",
+			desc:              "Some Source games weren't made with the best security practices, and have some sound assets\n      diffusion block by SELinux, this tweak lower the security for a better experience.",
 			callback:          func() error { 
 				stdOut, err := exec.Command("getsebool", "allow_execheap").Output()
 				if err != nil {
@@ -193,7 +193,7 @@ func tweaks() []tweak {
 		},
 		tweak{
 			name:              "Install non-free p7zip with unrar capacities",
-			desc:              "Install the systemd-container dnf package, mainly with GDM Settings in mind.",
+			desc:              "Fedora removed the rar capabilities of the shipped p7zip package, this tweak install\n      an older version that has that capability.",
 			callback:          func() error { return nil },
 			selectedByDefault: false,
 		},
