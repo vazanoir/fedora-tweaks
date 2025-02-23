@@ -3,9 +3,13 @@ package main
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"io"
+	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -128,7 +132,7 @@ func tweaks() []tweak {
 					return nil
 				}
 
-				stdOut, err = exec.Command("dnf", "install", "systemd-container").Output()
+				stdOut, err = exec.Command("dnf", "install", "-y", "systemd-container").Output()
 				if err != nil {
 					return err
 				}
@@ -137,30 +141,30 @@ func tweaks() []tweak {
 			selectedByDefault: true,
 		},
 		tweak{
-			name:              "Fix issue between SELinux and Source games",
-			desc:              "Some Source games weren't made with the best security practices, and have some sound assets\n      diffusion block by SELinux, this tweak lower the security for a better experience.",
-			callback:          func() error { 
+			name: "Fix issue between SELinux and Source games",
+			desc: "Some Source games weren't made with the best security practices, and have some sound assets\n      diffusion block by SELinux, this tweak lower the security for a better experience.",
+			callback: func() error {
 				stdOut, err := exec.Command("getsebool", "allow_execheap").Output()
 				if err != nil {
 					return err
 				}
-                if strings.Contains(string(stdOut), "on") {
-                    return nil
-                }
+				if strings.Contains(string(stdOut), "on") {
+					return nil
+				}
 
 				stdOut, err = exec.Command("setsebool", "-P", "allow_execheap", "1").Output()
 				if err != nil {
 					return err
 				}
 
-                return nil
-            },
+				return nil
+			},
 			selectedByDefault: false,
 		},
 		tweak{
-			name:              "Increase vm.max_map_count to 16 GB",
-			desc:              "Some applications and games (like Red Dead Redemption 2 or Star Citizen) crash because\n      of this value being too low. This tweak increase it to 16 GB, don't use this tweak if you\n      have less than that amount in RAM.",
-			callback:          func() error { 
+			name: "Increase vm.max_map_count to 16 GB",
+			desc: "Some applications and games (like Red Dead Redemption 2 or Star Citizen) crash because\n      of this value being too low. This tweak increase it to 16 GB, don't use this tweak if you\n      have less than that amount in RAM.",
+			callback: func() error {
 				f, err := os.OpenFile("/etc/sysctl.conf", os.O_APPEND|os.O_RDWR, 0644)
 				if err != nil {
 					return err
@@ -187,15 +191,132 @@ func tweaks() []tweak {
 					return err
 				}
 
-                return nil
-            },
+				return nil
+			},
 			selectedByDefault: false,
 		},
 		tweak{
-			name:              "Install non-free p7zip with unrar capacities",
-			desc:              "Fedora removed the rar capabilities of the shipped p7zip package, this tweak install\n      an older version that has that capability.",
-			callback:          func() error { return nil },
+			name: "Install non-free p7zip with unrar capacities",
+			desc: "Fedora removed the rar capabilities of the shipped p7zip package, this tweak install\n      an older version that has that capability.",
+			callback: func() error {
+				// removing already install p7zip
+				stdOut, err := exec.Command("dnf", "list", "--installed").Output()
+				if err != nil {
+					return fmt.Errorf("listing packaging: %v", err)
+				}
+				if strings.Contains(string(stdOut), "p7zip") {
+					stdOut, err = exec.Command("dnf", "remove", "-y", "p7zip", "p7zip-plugins").Output()
+					if err != nil {
+						return fmt.Errorf("removing current p7zip: %v", err)
+					}
+				}
+
+				// p7zip
+				u, err := url.Parse("https://github.com/ttys3/fedora-rpm-p7zip/releases/download/16.02/p7zip-16.02-24.fc37.x86_64.rpm")
+				if err != nil {
+					return fmt.Errorf("parsing url: %v", err)
+				}
+				filename := filepath.Base(u.Path)
+
+				err = downloadFromGithub(u)
+				if err != nil {
+					return fmt.Errorf("downloading: %v", err)
+				}
+
+				stdOut, err = exec.Command("dnf", "install", "-y", "/tmp/"+filename).Output()
+				if err != nil {
+					return fmt.Errorf("installing: %v", err)
+				}
+
+				// p7zip-plugins
+				u, err = url.Parse("https://github.com/ttys3/fedora-rpm-p7zip/releases/download/16.02/p7zip-plugins-16.02-24.fc37.x86_64.rpm")
+				if err != nil {
+					return fmt.Errorf("parsing url: %v", err)
+				}
+				filename = filepath.Base(u.Path)
+
+				err = downloadFromGithub(u)
+				if err != nil {
+					return fmt.Errorf("downloading: %v", err)
+				}
+
+				stdOut, err = exec.Command("dnf", "install", "-y", "/tmp/"+filename).Output()
+				if err != nil {
+					return fmt.Errorf("installing: %v", err)
+				}
+
+				// add exception to dnf.conf
+				f, err := os.OpenFile("/etc/dnf/dnf.conf", os.O_APPEND|os.O_RDWR, 0644)
+				if err != nil {
+					return err
+				}
+				defer f.Close()
+
+				reader := bufio.NewReader(f)
+				for {
+					line, err := reader.ReadString('\n')
+					if err == io.EOF {
+						break
+					}
+					if err != nil {
+						return err
+					}
+
+					if strings.Contains(line, "exclude") {
+						return nil
+					}
+				}
+
+				_, err = f.WriteString("exclude=p7zip p7zip-plugins")
+				if err != nil {
+					return err
+				}
+
+				return nil
+			},
 			selectedByDefault: false,
 		},
 	}
+}
+
+func downloadFromGithub(u *url.URL) error {
+	client := &http.Client{}
+
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return err
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 300 && resp.StatusCode <= 399 {
+		redirectUrl, err := resp.Location()
+		if err != nil {
+			return err
+		}
+
+		req.URL = redirectUrl
+		resp, err = client.Do(req)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+	}
+
+	out, err := os.Create(fmt.Sprintf("/tmp/%v", filepath.Base(u.Path)))
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
