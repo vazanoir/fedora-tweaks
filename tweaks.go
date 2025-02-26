@@ -199,7 +199,7 @@ func tweaks() []tweak {
 			name: "Install non-free p7zip with unrar capacities",
 			desc: "Fedora removed the rar capabilities of the shipped p7zip package, this tweak install\n      an older version that has that capability.",
 			callback: func() error {
-				// removing already install p7zip
+				// removing already installed p7zip
 				stdOut, err := exec.Command("dnf", "list", "--installed").Output()
 				if err != nil {
 					return fmt.Errorf("listing packaging: %v", err)
