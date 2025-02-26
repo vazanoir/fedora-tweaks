@@ -108,6 +108,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					os.Exit(100 + i)
 				}
 			}
+			fmt.Printf("\033[0;32m\nTweaks successfully applied!\033[0m")
+			os.Exit(0)
 		}
 	}
 
