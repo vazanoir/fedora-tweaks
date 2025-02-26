@@ -60,7 +60,7 @@ func errFmt(err string) error {
 func initialModel() model {
 	m := model{
 		choices:  []tweak{},
-		selected: map[int]interface{}{},
+		selected: map[int]any{},
 	}
 
 	for i, t := range tweaks() {
