@@ -216,14 +216,13 @@ func tweaks() []tweak {
 				if err != nil {
 					return fmt.Errorf("parsing url: %v", err)
 				}
-				filename := filepath.Base(u.Path)
 
-				err = downloadFromGithub(u)
+				fpath, err := downloadFromGithub(u)
 				if err != nil {
 					return fmt.Errorf("downloading: %v", err)
 				}
 
-				stdOut, err = exec.Command("dnf", "install", "-y", "/tmp/"+filename).Output()
+				stdOut, err = exec.Command("dnf", "install", "-y", fpath).Output()
 				if err != nil {
 					return fmt.Errorf("installing: %v", err)
 				}
@@ -233,14 +232,13 @@ func tweaks() []tweak {
 				if err != nil {
 					return fmt.Errorf("parsing url: %v", err)
 				}
-				filename = filepath.Base(u.Path)
 
-				err = downloadFromGithub(u)
+				fpath, err = downloadFromGithub(u)
 				if err != nil {
 					return fmt.Errorf("downloading: %v", err)
 				}
 
-				stdOut, err = exec.Command("dnf", "install", "-y", "/tmp/"+filename).Output()
+				stdOut, err = exec.Command("dnf", "install", "-y", fpath).Output()
 				if err != nil {
 					return fmt.Errorf("installing: %v", err)
 				}
@@ -279,44 +277,45 @@ func tweaks() []tweak {
 	}
 }
 
-func downloadFromGithub(u *url.URL) error {
+func downloadFromGithub(u *url.URL) (string, error) {
 	client := &http.Client{}
 
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 300 && resp.StatusCode <= 399 {
 		redirectUrl, err := resp.Location()
 		if err != nil {
-			return err
+			return "", err
 		}
 
 		req.URL = redirectUrl
 		resp, err = client.Do(req)
 		if err != nil {
-			return err
+			return "", err
 		}
 		defer resp.Body.Close()
 	}
 
-	out, err := os.Create(fmt.Sprintf("/tmp/%v", filepath.Base(u.Path)))
+	fpath := fmt.Sprintf("/tmp/%v", filepath.Base(u.Path))
+	out, err := os.Create(fpath)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer out.Close()
 
 	_, err = io.Copy(out, resp.Body)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return fpath, nil
 }
