@@ -244,13 +244,15 @@ func tweaks() []tweak {
 				}
 
 				// add exception to dnf.conf
-				f, err := os.OpenFile("/etc/dnf/dnf.conf", os.O_APPEND|os.O_RDWR, 0644)
+				f, err := os.OpenFile("/etc/dnf/dnf.conf", os.O_RDWR, 0644)
 				if err != nil {
 					return err
 				}
 				defer f.Close()
 
 				reader := bufio.NewReader(f)
+				fileContent := ""
+				foundExcludeLine := false
 				for {
 					line, err := reader.ReadString('\n')
 					if err == io.EOF {
@@ -260,12 +262,31 @@ func tweaks() []tweak {
 						return err
 					}
 
-					if strings.Contains(line, "exclude") {
-						return nil
+					if strings.Contains(line, "exclude=") {
+						if !strings.Contains(line, "p7zip p7zip-plugins") {
+							foundExcludeLine = true
+							line = line[:len(line)-1] + " p7zip p7zip-plugins\n"
+						}
 					}
+
+					fileContent += line
 				}
 
-				_, err = f.WriteString("exclude=p7zip p7zip-plugins\n")
+				if !foundExcludeLine {
+					fileContent += "exclude=p7zip p7zip-plugins\n"
+				}
+
+				err = f.Truncate(0)
+				if err != nil {
+					return err
+				}
+
+				_, err = f.Seek(0, 0)
+				if err != nil {
+					return err
+				}
+
+				_, err = f.WriteString(fileContent)
 				if err != nil {
 					return err
 				}
