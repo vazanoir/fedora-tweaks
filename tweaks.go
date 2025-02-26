@@ -15,7 +15,7 @@ import (
 
 func tweaks() []tweak {
 	return []tweak{
-		tweak{
+		{
 			name: "Dnf parallel downloads",
 			desc: "Set the number of parallel downloads dnf can do to 10.",
 			callback: func() error {
@@ -49,7 +49,7 @@ func tweaks() []tweak {
 			},
 			selectedByDefault: true,
 		},
-		tweak{
+		{
 			name: "Remove Fedora flatpak remote",
 			desc: "Remove the Fedora Flatpak apps and repository.",
 			callback: func() error {
@@ -71,7 +71,7 @@ func tweaks() []tweak {
 			},
 			selectedByDefault: true,
 		},
-		tweak{
+		{
 			name: "Add Flathub flatpak remote",
 			desc: "Add the most popular remote for flatpaks.",
 			callback: func() error {
@@ -84,7 +84,7 @@ func tweaks() []tweak {
 			},
 			selectedByDefault: true,
 		},
-		tweak{
+		{
 			name: "Set flatpak as the prefered packaging format in Gnome Software",
 			desc: "Change the order packaging formats appear in Gnome Software so that flatpak shows first.",
 			callback: func() error {
@@ -97,7 +97,7 @@ func tweaks() []tweak {
 			},
 			selectedByDefault: true,
 		},
-		tweak{
+		{
 			name: "Load i2c-dev and i2c-piix4 kernel modules",
 			desc: "Load needed kernel modules for hardware detection in software like OpenRGB.",
 			callback: func() error {
@@ -120,7 +120,7 @@ func tweaks() []tweak {
 			},
 			selectedByDefault: true,
 		},
-		tweak{
+		{
 			name: "Install systemd-container, dependency for apps like GDM Settings",
 			desc: "This tweak exists because nothing tells you that GDM Settings need that package installed.",
 			callback: func() error {
@@ -140,7 +140,7 @@ func tweaks() []tweak {
 			},
 			selectedByDefault: true,
 		},
-		tweak{
+		{
 			name: "Fix issue between SELinux and Source games",
 			desc: "Some Source games weren't made with the best security practices, and have some sound assets\n      diffusion block by SELinux, this tweak lower the security for a better experience.",
 			callback: func() error {
@@ -161,7 +161,7 @@ func tweaks() []tweak {
 			},
 			selectedByDefault: false,
 		},
-		tweak{
+		{
 			name: "Increase vm.max_map_count to 16 GB",
 			desc: "Some applications and games (like Red Dead Redemption 2 or Star Citizen) crash because\n      of this value being too low. This tweak increase it to 16 GB, don't use this tweak if you\n      have less than that amount in RAM.",
 			callback: func() error {
@@ -195,7 +195,7 @@ func tweaks() []tweak {
 			},
 			selectedByDefault: false,
 		},
-		tweak{
+		{
 			name: "Install non-free p7zip with unrar capacities",
 			desc: "Fedora removed the rar capabilities of the shipped p7zip package, this tweak install\n      an older version that has that capability.",
 			callback: func() error {
