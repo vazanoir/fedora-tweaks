@@ -262,11 +262,9 @@ func tweaks() []tweak {
 						return err
 					}
 
-					if strings.Contains(line, "exclude=") {
-						if !strings.Contains(line, "p7zip p7zip-plugins") {
-							foundExcludeLine = true
-							line = line[:len(line)-1] + " p7zip p7zip-plugins\n"
-						}
+					if strings.Contains(line, "exclude=") && !strings.Contains(line, "p7zip p7zip-plugins") {
+						foundExcludeLine = true
+						line = line[:len(line)-1] + " p7zip p7zip-plugins\n"
 					}
 
 					fileContent += line
