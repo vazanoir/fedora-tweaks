@@ -19,7 +19,7 @@ type tweak struct {
 type model struct {
 	choices  []tweak
 	cursor   int
-	selected map[int]interface{}
+	selected map[int]any
 }
 
 func main() {
