@@ -100,7 +100,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.selected[m.cursor] = tweak{}
 			}
 		case "r":
-			for i, _ := range m.selected {
+			for i := range m.selected {
 				err := m.choices[i].callback()
 				if err != nil {
 					lowerName := strings.ToLower(m.choices[i].name)
