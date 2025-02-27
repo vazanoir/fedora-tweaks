@@ -55,7 +55,7 @@ func main() {
 }
 
 func errFmt(err string) error {
-	return fmt.Errorf("\033[0;31merror\033[0m: %v", err)
+	return fmt.Errorf("%v: %v", red("error"), err)
 }
 
 func initialModel() model {
@@ -124,7 +124,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					os.Exit(100 + i)
 				}
 			}
-			fmt.Printf("\n\033[0;32mTweaks successfully applied!\033[0m\n")
+			fmt.Printf(green("\nTweaks successfully applied!\n"))
 			os.Exit(0)
 		}
 	}
@@ -146,8 +146,8 @@ func (m model) View() string {
 			checked = "x"
 		}
 
-		s += fmt.Sprintf("\033[1m%s [%s] %s\033[0m\n", cursor, checked, choice.name)
-		s += fmt.Sprintf("\033[37m      %s\033[0m\n", choice.desc)
+		s += bold(fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice.name))
+		s += lightgrey(fmt.Sprintf("      %s\n", choice.desc))
 	}
 
 	s += "\n[q] quit   [j] down   [k] up   [space] select   [a] select all   [n] select none   [enter] apply selected tweaks\n"

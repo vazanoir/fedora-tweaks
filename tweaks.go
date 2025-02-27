@@ -5,11 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"net/http"
 	"net/url"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 )
 
@@ -358,47 +356,4 @@ func tweaks() []tweak {
 			selectedByDefault: true,
 		},
 	}
-}
-
-func downloadFromGithub(u *url.URL) (string, error) {
-	client := &http.Client{}
-
-	req, err := http.NewRequest("GET", u.String(), nil)
-	if err != nil {
-		return "", err
-	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode >= 300 && resp.StatusCode <= 399 {
-		redirectUrl, err := resp.Location()
-		if err != nil {
-			return "", err
-		}
-
-		req.URL = redirectUrl
-		resp, err = client.Do(req)
-		if err != nil {
-			return "", err
-		}
-		defer resp.Body.Close()
-	}
-
-	fpath := fmt.Sprintf("/tmp/%v", filepath.Base(u.Path))
-	out, err := os.Create(fpath)
-	if err != nil {
-		return "", err
-	}
-	defer out.Close()
-
-	_, err = io.Copy(out, resp.Body)
-	if err != nil {
-		return "", err
-	}
-
-	return fpath, nil
 }
