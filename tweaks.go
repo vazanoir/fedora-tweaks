@@ -355,7 +355,7 @@ func tweaks() []tweak {
 
 				return nil
 			},
-			selectedByDefault: false,
+			selectedByDefault: true,
 		},
 	}
 }
