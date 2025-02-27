@@ -146,7 +146,7 @@ func (m model) View() string {
 			checked = "x"
 		}
 
-		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice.name)
+		s += fmt.Sprintf("\033[1m%s [%s] %s\033[0m\n", cursor, checked, choice.name)
 		s += fmt.Sprintf("\033[37m      %s\033[0m\n", choice.desc)
 	}
 
