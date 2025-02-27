@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"sort"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -63,10 +64,17 @@ func initialModel() model {
 		selected: map[int]any{},
 	}
 
-	for i, t := range tweaks() {
-		m.choices = append(m.choices, t)
+	t := tweaks()
 
-		if t.selectedByDefault {
+	// move selectedByDefault tweaks at the top
+	sort.Slice(t, func(i, j int) bool {
+		return t[i].selectedByDefault && !t[j].selectedByDefault
+	})
+
+	for i, tweak := range t {
+		m.choices = append(m.choices, tweak)
+
+		if tweak.selectedByDefault {
 			m.selected[i] = nil
 		}
 	}
