@@ -61,10 +61,6 @@ func main() {
 	}
 }
 
-func errFmt(err string) error {
-	return fmt.Errorf("%v: %v", red("error"), err)
-}
-
 func initialModel() model {
 	m := model{
 		choices:  []tweak{},

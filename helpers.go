@@ -9,6 +9,10 @@ import (
 	"path/filepath"
 )
 
+func errFmt(err string) error {
+	return fmt.Errorf("%v: %v", red("error"), err)
+}
+
 func downloadFromGithub(u *url.URL) (string, error) {
 	client := &http.Client{}
 
