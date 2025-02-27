@@ -24,6 +24,13 @@ type model struct {
 }
 
 func main() {
+	// make sure to restore cursor after exiting the program
+	_, err := exec.Command("runuser", "--user", os.Getenv("SUDO_USER"), "--", "sh", "-c", "trap", "$(tput cnorm)", "EXIT").Output()
+	if err != nil {
+		fmt.Printf("%v", errFmt(err.Error()))
+		os.Exit(10)
+	}
+
 	// check if root
 	if os.Geteuid() != 0 {
 		fmt.Println(errFmt("this program requires root privileges"))
