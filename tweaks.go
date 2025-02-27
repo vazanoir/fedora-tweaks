@@ -332,7 +332,7 @@ func tweaks() []tweak {
 						return fmt.Errorf("listing installed packages: %v", err)
 					}
 
-					if !strings.Contains(string(stdOut), "dnfPkg") {
+					if !strings.Contains(string(stdOut), dnfPkg) {
 						continue
 					}
 
