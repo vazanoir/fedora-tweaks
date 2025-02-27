@@ -301,6 +301,9 @@ func tweaks() []tweak {
 			desc: "Install the flatpak version from Flathub of all default apps and remove the rpm one.",
 			callback: func() error {
 				packageList := map[string]string{
+					"firefox":             "org.mozilla.firefox",
+					"gnome-calendar":      "org.gnome.Calendar",
+					"gnome-text-editor":   "org.gnome.TextEditor",
 					"gnome-contacts":      "org.gnome.Contacts",
 					"snapshot":            "org.gnome.Snapshot",
 					"gnome-weather":       "org.gnome.Weather",
