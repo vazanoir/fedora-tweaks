@@ -325,8 +325,6 @@ func tweaks() []tweak {
 					"gnome-characters":    "org.gnome.Characters",
 					"gnome-logs":          "org.gnome.Logs",
 					"gnome-font-viewer":   "org.gnome.font-viewer",
-
-					"ptyxis": "org.gnome.Ptyxis",
 				}
 
 				for dnfPkg, flatpakPkg := range packageList {
