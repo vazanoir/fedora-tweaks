@@ -297,7 +297,7 @@ func tweaks() []tweak {
 			selectedByDefault: false,
 		},
 		{
-			name: "Reinstall all default rpm packages as flatpaks",
+			name: "Swap all default rpm apps as Flathub's flatpaks",
 			desc: "Install the flatpak version from Flathub of all default apps and remove the rpm one.",
 			callback: func() error {
 				packageList := map[string]string{
