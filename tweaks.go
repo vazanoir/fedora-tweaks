@@ -296,6 +296,66 @@ func tweaks() []tweak {
 			},
 			selectedByDefault: false,
 		},
+		{
+			name: "Reinstall all default rpm packages as flatpaks",
+			desc: "Install the flatpak version from Flathub of all default apps and remove the rpm one.",
+			callback: func() error {
+				packageList := map[string]string{
+					"gnome-contacts":      "org.gnome.Contacts",
+					"snapshot":            "org.gnome.Snapshot",
+					"gnome-weather":       "org.gnome.Weather",
+					"gnome-clocks":        "org.gnome.clocks",
+					"gnome-maps":          "org.gnome.Maps",
+					"mediawriter":         "org.fedoraproject.MediaWriter",
+					"libreoffice-writer":  "org.libreoffice.LibreOffice",
+					"libreoffice-calc":    "org.libreoffice.LibreOffice",
+					"libreoffice-impress": "org.libreoffice.LibreOffice",
+					"totem":               "org.gnome.Totem",
+					"gnome-calculator":    "org.gnome.Calculator",
+					"simple-scan":         "org.gnome.SimpleScan",
+					"gnome-boxes":         "org.gnome.Boxes",
+					"rhythmbox":           "org.gnome.Rhythmbox3",
+					"baobab":              "org.gnome.baobab",
+					"gnome-connections":   "org.gnome.Connections",
+					"evince":              "org.gnome.Evince",
+					"loupe":               "org.gnome.Loupe",
+					"gnome-characters":    "org.gnome.Characters",
+					"gnome-logs":          "org.gnome.Logs",
+					"gnome-font-viewer":   "org.gnome.font-viewer",
+
+					"ptyxis": "org.gnome.Ptyxis",
+				}
+
+				for dnfPkg, flatpakPkg := range packageList {
+					stdOut, err := exec.Command("dnf", "list", "--installed").Output()
+					if err != nil {
+						return fmt.Errorf("listing installed packages: %v", err)
+					}
+
+					if !strings.Contains(string(stdOut), "dnfPkg") {
+						continue
+					}
+
+					_, err = exec.Command("dnf", "remove", "-y", dnfPkg).Output()
+					if err != nil {
+						return fmt.Errorf("removing %v: %v", dnfPkg, err)
+					}
+
+					_, err = exec.Command("flatpak", "install", "-y", flatpakPkg).Output()
+					if err != nil {
+						return fmt.Errorf("installing %v: %v", flatpakPkg, err)
+					}
+				}
+
+				_, err := exec.Command("dnf", "autoremove", "-y").Output()
+				if err != nil {
+					return fmt.Errorf("autoremoving: %v", err)
+				}
+
+				return nil
+			},
+			selectedByDefault: false,
+		},
 	}
 }
 
