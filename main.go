@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"slices"
 	"sort"
+	"strconv"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -15,6 +17,7 @@ type tweak struct {
 	desc              string
 	callback          func() error
 	selectedByDefault bool
+	supportedVersions []int
 }
 
 type model struct {
@@ -60,14 +63,50 @@ func initialModel() model {
 		selected: map[int]any{},
 	}
 
-	t := tweaks()
+	tweaks := getTweaks()
+
+	// get the version of user's fedora
+	version := 0
+	data, err := os.ReadFile("/etc/os-release")
+	if err != nil {
+		fmt.Println(errFmt(err.Error()))
+		os.Exit(8)
+	}
+	lines := strings.Split(string(data), "\n")
+	for _, line := range lines {
+		pair := strings.Split(line, "=")
+		if len(pair) != 2 {
+			continue
+		}
+
+		key := pair[0]
+		value := pair[1]
+
+		if key == "VERSION_ID" {
+			version, err = strconv.Atoi(value)
+			if err != nil {
+				fmt.Println(errFmt(err.Error()))
+				os.Exit(9)
+			}
+			break
+		}
+	}
+
+	// filter unsupported tweaks for the current fedora version
+	supportedTweaks := []tweak{}
+	for _, tweak := range tweaks {
+		if slices.Contains(tweak.supportedVersions, version) {
+			supportedTweaks = append(supportedTweaks, tweak)
+		}
+	}
 
 	// move selectedByDefault tweaks at the top
-	sort.Slice(t, func(i, j int) bool {
-		return t[i].selectedByDefault && !t[j].selectedByDefault
+	sort.Slice(supportedTweaks, func(i, j int) bool {
+		return supportedTweaks[i].selectedByDefault && !supportedTweaks[j].selectedByDefault
 	})
 
-	for i, tweak := range t {
+	// setup the model
+	for i, tweak := range supportedTweaks {
 		m.choices = append(m.choices, tweak)
 
 		if tweak.selectedByDefault {

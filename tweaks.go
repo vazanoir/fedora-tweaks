@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-func tweaks() []tweak {
+func getTweaks() []tweak {
 	return []tweak{
 		{
 			name: "Dnf parallel downloads",
@@ -46,6 +46,7 @@ func tweaks() []tweak {
 				return nil
 			},
 			selectedByDefault: true,
+			supportedVersions: []int{41},
 		},
 		{
 			name: "Remove Fedora flatpak remote",
@@ -68,6 +69,7 @@ func tweaks() []tweak {
 				return nil
 			},
 			selectedByDefault: true,
+			supportedVersions: []int{41},
 		},
 		{
 			name: "Add Flathub flatpak remote",
@@ -81,6 +83,7 @@ func tweaks() []tweak {
 				return nil
 			},
 			selectedByDefault: true,
+			supportedVersions: []int{41},
 		},
 		{
 			name: "Set flatpak as the prefered packaging format in Gnome Software",
@@ -94,6 +97,7 @@ func tweaks() []tweak {
 				return nil
 			},
 			selectedByDefault: true,
+			supportedVersions: []int{41},
 		},
 		{
 			name: "Load i2c-dev and i2c-piix4 kernel modules",
@@ -117,6 +121,7 @@ func tweaks() []tweak {
 				return nil
 			},
 			selectedByDefault: true,
+			supportedVersions: []int{41},
 		},
 		{
 			name: "Install systemd-container, dependency for apps like GDM Settings",
@@ -137,6 +142,7 @@ func tweaks() []tweak {
 				return nil
 			},
 			selectedByDefault: true,
+			supportedVersions: []int{41},
 		},
 		{
 			name: "Fix issue between SELinux and Source games",
@@ -158,6 +164,7 @@ func tweaks() []tweak {
 				return nil
 			},
 			selectedByDefault: false,
+			supportedVersions: []int{41},
 		},
 		{
 			name: "Increase vm.max_map_count to 16G",
@@ -192,6 +199,7 @@ func tweaks() []tweak {
 				return nil
 			},
 			selectedByDefault: false,
+			supportedVersions: []int{41},
 		},
 		{
 			name: "Install non-free p7zip with unrar capacities",
@@ -293,6 +301,7 @@ func tweaks() []tweak {
 				return nil
 			},
 			selectedByDefault: false,
+			supportedVersions: []int{41},
 		},
 		{
 			name: "Swap all default rpm apps for Flathub's flatpaks",
@@ -354,6 +363,7 @@ func tweaks() []tweak {
 				return nil
 			},
 			selectedByDefault: true,
+			supportedVersions: []int{41},
 		},
 	}
 }
