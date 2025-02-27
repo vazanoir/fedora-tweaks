@@ -342,7 +342,7 @@ func tweaks() []tweak {
 						return fmt.Errorf("removing %v: %v", dnfPkg, err)
 					}
 
-					_, err = exec.Command("flatpak", "install", "-y", flatpakPkg).Output()
+					_, err = exec.Command("flatpak", "install", "-y", "flathub", flatpakPkg).Output()
 					if err != nil {
 						return fmt.Errorf("installing %v: %v", flatpakPkg, err)
 					}
