@@ -107,7 +107,15 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				m.selected[m.cursor] = tweak{}
 			}
-		case "r":
+		case "a":
+			for i := range m.choices {
+				m.selected[i] = tweak{}
+			}
+		case "n":
+			for i := range m.choices {
+				delete(m.selected, i)
+			}
+		case "enter":
 			for i := range m.selected {
 				err := m.choices[i].callback()
 				if err != nil {
@@ -125,7 +133,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	s := "Select the wanted tweaks:\n\n"
+	s := "Select tweaks:\n\n"
 
 	for i, choice := range m.choices {
 		cursor := " "
@@ -139,10 +147,10 @@ func (m model) View() string {
 		}
 
 		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice.name)
-		s += fmt.Sprintf("\033[37m      %s\n\033[0m", choice.desc)
+		s += fmt.Sprintf("\033[37m      %s\033[0m\n", choice.desc)
 	}
 
-	s += "\n[q] quit   [j] down   [k] up   [space] select   [r] apply selected tweaks\n"
+	s += "\n[q] quit   [j] down   [k] up   [space] select   [a] select all   [n] select none   [enter] apply selected tweaks\n"
 
 	return s
 }
