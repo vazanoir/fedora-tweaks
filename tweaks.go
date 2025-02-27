@@ -297,8 +297,8 @@ func tweaks() []tweak {
 			selectedByDefault: false,
 		},
 		{
-			name: "Swap all default rpm apps as Flathub's flatpaks",
-			desc: "Install the flatpak version from Flathub of all default apps and remove the rpm one.",
+			name: "Swap all default rpm apps for Flathub's flatpaks",
+			desc: "Install the flatpak version from Flathub of all default apps and remove the rpm ones.",
 			callback: func() error {
 				packageList := map[string]string{
 					"firefox":             "org.mozilla.firefox",
