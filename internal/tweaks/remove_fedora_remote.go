@@ -8,6 +8,8 @@ import (
 var removeFedoraRemote = Tweak{
 	Name: "Remove Fedora flatpak remote",
 	Desc: "Remove the Fedora Flatpak apps and repository.",
+	SelectedByDefault: true,
+	SupportedVersions: []int{41},
 	Callback: func() error {
 		stdOut, err := exec.Command("flatpak", "remotes").Output()
 		if err != nil {
@@ -25,6 +27,4 @@ var removeFedoraRemote = Tweak{
 
 		return nil
 	},
-	SelectedByDefault: true,
-	SupportedVersions: []int{41},
 }

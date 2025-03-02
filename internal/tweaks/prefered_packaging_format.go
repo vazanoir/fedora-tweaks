@@ -8,6 +8,8 @@ import (
 var preferedPackagingFormat = Tweak{
 	Name: "Set flatpak as the prefered packaging format in Gnome Software",
 	Desc: "Change the order packaging formats appear in Gnome Software so that flatpak shows first.",
+	SelectedByDefault: true,
+	SupportedVersions: []int{41},
 	Callback: func() error {
 		_, err := exec.Command(
 			"runuser",
@@ -24,6 +26,4 @@ var preferedPackagingFormat = Tweak{
 
 		return nil
 	},
-	SelectedByDefault: true,
-	SupportedVersions: []int{41},
 }

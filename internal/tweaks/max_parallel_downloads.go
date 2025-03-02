@@ -10,6 +10,8 @@ import (
 var maxParallelDownloads = Tweak{
 	Name: "Dnf parallel downloads",
 	Desc: "Set the number of parallel downloads dnf can do to 10.",
+	SelectedByDefault: true,
+	SupportedVersions: []int{41},
 	Callback: func() error {
 		f, err := os.OpenFile("/etc/dnf/dnf.conf", os.O_APPEND|os.O_RDWR, 0644)
 		if err != nil {
@@ -39,6 +41,4 @@ var maxParallelDownloads = Tweak{
 
 		return nil
 	},
-	SelectedByDefault: true,
-	SupportedVersions: []int{41},
 }

@@ -8,6 +8,8 @@ import (
 var selinuxAllowExecheap = Tweak{
 	Name: "Fix issue between SELinux and Source games",
 	Desc: "Some Source games weren't made with the best security practices, and have some sound assets\n      diffusion block by SELinux, this tweak lower the security for a better experience.",
+	SelectedByDefault: false,
+	SupportedVersions: []int{41},
 	Callback: func() error {
 		stdOut, err := exec.Command("getsebool", "allow_execheap").Output()
 		if err != nil {
@@ -24,6 +26,4 @@ var selinuxAllowExecheap = Tweak{
 
 		return nil
 	},
-	SelectedByDefault: false,
-	SupportedVersions: []int{41},
 }

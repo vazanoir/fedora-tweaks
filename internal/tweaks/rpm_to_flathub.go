@@ -36,6 +36,8 @@ var packageList = map[string]string{
 var rpmToFlathub = Tweak{
 	Name: "Swap all default rpm apps for Flathub's flatpaks",
 	Desc: "Install the flatpak version from Flathub of all default apps and remove the rpm ones.",
+	SelectedByDefault: true,
+	SupportedVersions: []int{41},
 	Callback: func() error {
 
 		for dnfPkg, flatpakPkg := range packageList {
@@ -66,6 +68,4 @@ var rpmToFlathub = Tweak{
 
 		return nil
 	},
-	SelectedByDefault: true,
-	SupportedVersions: []int{41},
 }

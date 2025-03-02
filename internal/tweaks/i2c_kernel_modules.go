@@ -8,6 +8,8 @@ import (
 var i2cKernelModules = Tweak{
 	Name: "Load i2c-dev and i2c-piix4 kernel modules",
 	Desc: "Load needed kernel modules for hardware detection in software like OpenRGB.",
+	SelectedByDefault: true,
+	SupportedVersions: []int{41},
 	Callback: func() error {
 		filePath := "/etc/modules-load.d/i2c.conf"
 		_, err := os.Stat(filePath)
@@ -26,6 +28,4 @@ var i2cKernelModules = Tweak{
 
 		return nil
 	},
-	SelectedByDefault: true,
-	SupportedVersions: []int{41},
 }

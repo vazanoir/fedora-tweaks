@@ -5,6 +5,8 @@ import "os/exec"
 var addFlathubRemote = Tweak{
 	Name: "Add Flathub flatpak remote",
 	Desc: "Add the most popular remote for flatpaks.",
+	SelectedByDefault: true,
+	SupportedVersions: []int{41},
 	Callback: func() error {
 		_, err := exec.Command(
 			"flatpak",
@@ -19,6 +21,4 @@ var addFlathubRemote = Tweak{
 
 		return nil
 	},
-	SelectedByDefault: true,
-	SupportedVersions: []int{41},
 }

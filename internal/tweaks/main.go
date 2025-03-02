@@ -3,9 +3,9 @@ package tweaks
 type Tweak struct {
 	Name              string
 	Desc              string
-	Callback          func() error
 	SelectedByDefault bool
 	SupportedVersions []int
+	Callback          func() error
 }
 
 var Tweaks = []Tweak{

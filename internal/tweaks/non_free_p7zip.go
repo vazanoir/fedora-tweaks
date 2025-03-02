@@ -15,6 +15,8 @@ import (
 var nonFreeP7zip = Tweak{
 	Name: "Install non-free p7zip with unrar capacities",
 	Desc: "Fedora removed the rar capabilities of the shipped p7zip package, this tweak install\n      an older version that has that capability.",
+	SelectedByDefault: false,
+	SupportedVersions: []int{41},
 	Callback: func() error {
 		// removing already installed p7zip
 		stdOut, err := exec.Command("dnf", "list", "--installed").Output()
@@ -111,8 +113,6 @@ var nonFreeP7zip = Tweak{
 
 		return nil
 	},
-	SelectedByDefault: false,
-	SupportedVersions: []int{41},
 }
 
 func downloadFromGithub(u *url.URL) (string, error) {

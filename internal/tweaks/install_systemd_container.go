@@ -8,6 +8,8 @@ import (
 var installSystemdContainer = Tweak{
 	Name: "Install systemd-container, dependency for apps like GDM Settings",
 	Desc: "This tweak exists because nothing tells you that GDM Settings need that package installed.",
+	SelectedByDefault: true,
+	SupportedVersions: []int{41},
 	Callback: func() error {
 		stdOut, err := exec.Command("dnf", "list", "--installed").Output()
 		if err != nil {
@@ -23,6 +25,4 @@ var installSystemdContainer = Tweak{
 		}
 		return nil
 	},
-	SelectedByDefault: true,
-	SupportedVersions: []int{41},
 }
