@@ -63,8 +63,8 @@ func initialModel() model {
 		fmt.Println(errFmt(err.Error()))
 		os.Exit(8)
 	}
-	lines := strings.Split(string(data), "\n")
-	for _, line := range lines {
+	lines := strings.SplitSeq(string(data), "\n")
+	for line := range lines {
 		pair := strings.Split(line, "=")
 		if len(pair) != 2 {
 			continue
